@@ -26,16 +26,16 @@ public class ALU { // possible Arithmetic Logic Unit prototype
 	}
 	
 	/**
-     * Performs an operation specified by the control signal on the given inputs.
-     * Updates the output and the status flags (Z and N) based on the result.
-     *
-     * @param control an 8-bit encoded signal defining the operation
-     * @param inputA the first operand
-     * @param inputB the second operand
-     */
+	 * Performs an operation specified by the control signal on the given inputs.
+	 * Updates the output and the status flags (Z and N) based on the result.
+	 *
+	 * @param control an 8-bit encoded signal defining the operation
+	 * @param inputA the first operand
+	 * @param inputB the second operand
+	 */
 	public void calculate(byte control, short inputA, short inputB) {
 		 
-		output = (short) (inputA + inputB);	       // default: Sum	 
+		output = (short) (inputA + inputB);        // default: Sum	 
 		if (control == 1)                          // case 1: Bitwise AND
 			output = (short) (inputA & inputB);
 		else if (control == 2)                     // case 2: Pass-through

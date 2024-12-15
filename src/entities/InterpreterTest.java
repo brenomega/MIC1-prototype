@@ -1,5 +1,9 @@
 package entities;
 
+
+// Will be removed soon
+
+
 /**
  * Test program for the Interpreter class.
  * Demonstrates the execution of a simple program stored in memory.
@@ -8,14 +12,14 @@ public class InterpreterTest {
 
 	public static void main(String[] args) {
 		// memory representation
-        int[] memory = new int[256];
-        /*
-         * Example program:
-         * Each instruction is a 16-bit integer:
-         * [opcode (4 bits)][address (12 bits)]
-         * Opcodes:
-         * 1 = ADD, 2 = SUB, 3 = JUMP, 4 = HALT
-         */
+		int[] memory = new int[256];
+		/*
+		 * Example program:
+		 * Each instruction is a 16-bit integer:
+		 * [opcode (4 bits)][address (12 bits)]
+		 * Opcodes:
+		 * 1 = ADD, 2 = SUB, 3 = JUMP, 4 = HALT
+		 */
         
         memory[0] = 0x1005; // ADD memory[5]
         memory[1] = 0x2006; // SUB memory[6]
