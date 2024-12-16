@@ -10,35 +10,83 @@ package entities;
 public class ControlUnit {
 	
 	// Control signals
-	boolean AMUXControl = false;         // Controls the selection of the source for the A input of the ALU
-	byte CONDControl = 0;                // Controls the condition for branching in the microprogram
-	byte ALUControl = 0;                 // Controls the operation performed by the ALU
-	byte SHControl = 0;                  // Controls the shift operations (e.g., shift left, shift right)
-	boolean MBRControl = false;          // Controls the Memory Buffer Register (MBR)
-	boolean MARControl = false;          // Controls the Memory Address Register (MAR)
-	boolean RDControl = false;           // Enables read operation from memory
-	boolean WRControl = false;           // Enables write operation to memory
-	boolean ENCControl = false;          // Enables C Bus
-	byte CControl = 0;                   // Controls the destination register for ALU output
-	byte BControl = 0;                   // Controls the input source for the B bus
-	byte AControl = 0;                   // Controls the input source for the A bus
-	byte nextAddress = 0;                // Stores the next microinstruction address
+	private boolean AMUXControl = false;    // Controls the selection of the source for the A input of the ALU
+	private byte CONDControl = 0;           // Controls the condition for branching in the microprogram
+	private byte ALUControl = 0;            // Controls the operation performed by the ALU
+	private byte SHControl = 0;             // Controls the shift operations (e.g., shift left, shift right)
+	private boolean MBRControl = false;     // Controls the Memory Buffer Register (MBR)
+	private boolean MARControl = false;     // Controls the Memory Address Register (MAR)
+	private boolean RDControl = false;      // Enables read operation from memory
+	private boolean WRControl = false;      // Enables write operation to memory
+	private boolean ENCControl = false;     // Enables C Bus
+	private byte CControl = 0;              // Controls the destination register for ALU output
+	private byte BControl = 0;              // Controls the input source for the B bus
+	private byte AControl = 0;              // Controls the input source for the A bus
+	private byte nextAddress = 0;           // Stores the next microinstruction address
 	
 	// Registers and memory
-	byte MPC = 0;
-	String MIR;
+	private short MPC = 0;
+	private String MIR;
 	
 	// Additional control logic and components
-	MUX mMUX = new MUX();
-	MSL masterSequenceLogic = new MSL();
-	boolean nBit;
-	boolean zBit;
+	private MUX mMUX = new MUX();
+	private MSL masterSequenceLogic = new MSL();
+	private boolean nBit;
+	private boolean zBit;
 	
+	public boolean getAMUXControl() {
+		return AMUXControl;
+	}
+
+	public byte getCONDControl() {
+		return CONDControl;
+	}
+
+	public byte getALUControl() {
+		return ALUControl;
+	}
+
+	public byte getSHControl() {
+		return SHControl;
+	}
+
+	public boolean getMBRControl() {
+		return MBRControl;
+	}
+
+	public boolean getMARControl() {
+		return MARControl;
+	}
+
+	public boolean getRDControl() {
+		return RDControl;
+	}
+
+	public boolean getWRControl() {
+		return WRControl;
+	}
+
+	public boolean getENCControl() {
+		return ENCControl;
+	}
+
+	public byte getCControl() {
+		return CControl;
+	}
+
+	public byte getBControl() {
+		return BControl;
+	}
+
+	public byte getAControl() {
+		return AControl;
+	}
+
 	/* 
 	 * Control memory stores the microprogram:
 	 * It is necessary to study the possibility of storing it in a text file.
 	 */
-	String[] ControlMemory = {
+	private String[] ControlMemory = {
 			"00000000011000000000000000000000",
 			"00000000101000000000011000000000",
 			"10110000000010011000000000000111",

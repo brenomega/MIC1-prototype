@@ -7,13 +7,13 @@ package entities;
  */
 public class MUX {
 
-	private byte output;
+	private short output;
 	
-	public byte getOutput() {
+	public short getOutput() {
 		return output;
 	}
 
-	public void setOutput(byte output) {
+	public void setOutput(short output) {
 		this.output = output;
 	}
 
@@ -27,7 +27,7 @@ public class MUX {
 	 * @param inputA the first input value
 	 * @param inputB the second input value
 	 */
-	public void decideOutput(boolean control, byte inputA, byte inputB) {
+	public void decideOutput(boolean control, short inputA, short inputB) {
 		if (control)
 			output = inputB;
 		else
