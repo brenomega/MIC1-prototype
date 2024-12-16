@@ -25,16 +25,16 @@ public class Shifter {
 	 *                - `2`: Perform a logical left shift (multiply by 2).
 	 * @param input   The 16-bit signed integer to be shifted.
 	 */
-    public void shift(byte control, short input) {
-    	// Default behavior: no shift, output equals input.
-    	output = input;
+	public void shift(byte control, short input) {
+		// Default behavior: no shift, output equals input.
+		output = input;
         
-    	// Apply the shift based on the control signal.
-    	if (control == 1)
-    		// Logical right shift: shifts all bits 1 position to the right.
-    		output = (short) (output >> 1);
-    	else if (control == 2)
-    		// Logical left shift: shifts all bits 1 position to the left.
-    		output = (short) (output << 1);
-    }
+		// Apply the shift based on the control signal.
+		if (control == 1)
+			// Logical right shift: shifts all bits 1 position to the right.
+			output = (short) (output >> 1);
+		else if (control == 2)
+			// Logical left shift: shifts all bits 1 position to the left.
+			output = (short) (output << 1);
+	}
 }

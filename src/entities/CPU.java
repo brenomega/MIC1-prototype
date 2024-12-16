@@ -51,10 +51,10 @@ public class CPU implements Runnable {
 	private int subcycle = 0;                                  // Tracks the current sub-cycle (1 to 4)
 	
 	/**
-     * Updates the data path continuously, simulating a "latent" state,
-     * when no valid control signals are present.
-     * Needs update to handle Main Memory operations.
-     */
+	 * Updates the data path continuously, simulating a "latent" state,
+	 * when no valid control signals are present.
+	 * Needs update to handle Main Memory operations.
+	 */
 	private void executeDatapath() {
 		// Fetch input for A latch based on Control Unit's AControl signal
 		aLatch = registers[controlUnit.getAControl()].getValue();
@@ -69,6 +69,10 @@ public class CPU implements Runnable {
 		
 		// Perform the ALU operation based on the ALUControl signal
 		alu.calculate(controlUnit.getALUControl(), aInput, bInput);
+		
+		// Send N and Z flags to the Control Unit for flow control logic
+		controlUnit.setNBit(alu.getNBit());
+		controlUnit.setZBit(alu.getZBit());
 		
 		// Perform the shift operation based on the SHControl signal
 		shifter.shift(controlUnit.getSHControl(), alu.getOutput());
@@ -108,9 +112,9 @@ public class CPU implements Runnable {
 	}
 	
 	/**
-     * Advances to the next sub-cycle based on user input.
-     * This method should be called when the user clicks the button to advance the simulation.
-     */
+	 * Advances to the next sub-cycle based on user input.
+	 * This method should be called when the user clicks the button to advance the simulation.
+	 */
 	public void advanceSubcycle() {
 		subcycle = (subcycle % 4) + 1; // Cycle through 1 to 4
 

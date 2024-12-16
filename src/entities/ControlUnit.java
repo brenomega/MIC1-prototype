@@ -81,6 +81,14 @@ public class ControlUnit {
 	public byte getAControl() {
 		return AControl;
 	}
+	
+	public void setNBit(boolean nBit) {
+		this.nBit = nBit;
+	}
+	
+	public void setZBit(boolean zBit) {
+		this.zBit = zBit;
+	}
 
 	/* 
 	 * Control memory stores the microprogram:
