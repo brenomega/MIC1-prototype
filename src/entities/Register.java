@@ -33,4 +33,9 @@ public class Register {
 	public void setValue(short value) {
 		this.value = value;
 	}
+
+	@Override
+	public String toString() {
+		return "Register [name=" + name + ", value=" + value + "]";
+	}
 }

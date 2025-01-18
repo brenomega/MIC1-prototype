@@ -48,14 +48,24 @@ public class CPU implements Runnable {
 	
 	// Thread control
 	private boolean running = true;                            // Indicates if the CPU should continue running
-	private int subcycle = 0;                                  // Tracks the current sub-cycle (1 to 4)
+	private int count = 0;                                     // Tracks the current sub-cycle (1 to 4)
+	private final Object lock = new Object();                  // Locks thread to prevent noise from altering the state of the machine
+	
+	private Memory memory = new Memory();
 	
 	/**
 	 * Updates the data path continuously, simulating a "latent" state,
 	 * when no valid control signals are present.
-	 * Needs update to handle Main Memory operations.
 	 */
 	private void executeDatapath() {
+		if (memory.isReadReady()) {
+			MBR = memory.read();
+		}
+		
+		if (memory.isWriteReady()) {
+			memory.write((short) MBR);
+		}
+		
 		// Fetch input for A latch based on Control Unit's AControl signal
 		aLatch = registers[controlUnit.getAControl()].getValue();
 		
@@ -89,11 +99,11 @@ public class CPU implements Runnable {
 		if (controlUnit.getENCControl())
 			registers[controlUnit.getCControl()].setValue(shifter.getOutput());
 		
-		/*
-		 * Placeholder for future implementation of in-memory operations
-		 * (e.g., read/write operations involving main memory).
-		 * ...
-		 */
+		if (controlUnit.getRDControl())
+			memory.setAdress((short) MAR);
+		
+		if (controlUnit.getWRControl())
+			memory.setAdress((short) MAR);
 	}
 	
 	/**
@@ -116,14 +126,30 @@ public class CPU implements Runnable {
 	 * This method should be called when the user clicks the button to advance the simulation.
 	 */
 	public void advanceSubcycle() {
-		subcycle = (subcycle % 4) + 1; // Cycle through 1 to 4
+		int subcycle = (count % 4) + 1; // Cycle through 1 to 4
 
 		// Execute the corresponding sub-cycle in the Control Unit
 		switch (subcycle) {
-			case 1: controlUnit.runFirstSubcycle();
-			case 2: controlUnit.runSecondSubcycle();
-			case 3: controlUnit.runThirdSubcycle();
-			case 4: controlUnit.runFourthSubcycle();
+			case 1: 
+				count++;
+				controlUnit.runFirstSubcycle();
+				break;
+			case 2: 
+				count++;
+				controlUnit.runSecondSubcycle();
+				break;
+			case 3: 
+				count++;
+				controlUnit.runThirdSubcycle();
+				break;
+			case 4: 
+				count++;
+				synchronized(lock) {
+					controlUnit.runFourthSubcycle();
+					executeDatapath();
+					controlUnit.setToInitial();
+				}
+				break;
         }
     }
 
@@ -148,5 +174,43 @@ public class CPU implements Runnable {
 				running = false;
 			}
 		}
+	}
+	
+	// Temporary
+	public short getAC() {
+		return registers[1].getValue();
+	}
+	
+	// Temporary
+	public Memory getMemory() {
+		return memory;
+	}
+	
+	// Temporary
+	public Register[] getRegisters() {
+		return registers;
+	}
+	
+	// Temporary
+	public int getCount() {
+		return count;
+	}
+	
+	// Temporary
+	public void printSignals() {
+		System.out.println(controlUnit.getAMUXControl());
+		System.out.println(controlUnit.getCONDControl());
+		System.out.println(controlUnit.getALUControl());
+		System.out.println(controlUnit.getSHControl());
+		System.out.println(controlUnit.getMBRControl());
+		System.out.println(controlUnit.getMARControl());
+		System.out.println(controlUnit.getRDControl());
+		System.out.println(controlUnit.getWRControl());
+		System.out.println(controlUnit.getENCControl());
+		System.out.println(controlUnit.getCControl());
+		System.out.println(controlUnit.getBControl());
+		System.out.println(controlUnit.getAControl());
+		System.out.println(controlUnit.getMPC());
+		System.out.println(controlUnit.getMIR());
 	}
 }
