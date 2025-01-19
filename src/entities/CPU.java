@@ -132,15 +132,24 @@ public class CPU implements Runnable {
 		switch (subcycle) {
 			case 1: 
 				count++;
-				controlUnit.runFirstSubcycle();
+				synchronized(lock) {
+					controlUnit.runFirstSubcycle();
+					executeDatapath();
+				}
 				break;
 			case 2: 
 				count++;
-				controlUnit.runSecondSubcycle();
+				synchronized(lock) {
+					controlUnit.runSecondSubcycle();
+					executeDatapath();
+				}
 				break;
 			case 3: 
 				count++;
-				controlUnit.runThirdSubcycle();
+				synchronized(lock) {
+					controlUnit.runThirdSubcycle();
+					executeDatapath();
+				}
 				break;
 			case 4: 
 				count++;
@@ -152,6 +161,18 @@ public class CPU implements Runnable {
 				break;
         }
     }
+	
+	/**
+	 * Advances to the next cycle based on user input.
+	 * This method should be called when the user clicks the button to advance the simulation.
+	 */
+	public void advanceCycle() {
+		for (int i = 0; i < 4; i++) {
+			synchronized (lock) {
+				advanceSubcycle();
+			}
+		}
+	}
 
 	/**
 	 * Executes the main loop of the CPU.
