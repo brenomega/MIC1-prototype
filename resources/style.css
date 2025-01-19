@@ -1,0 +1,110 @@
+/* style.css */
+
+/* Background */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #f2f2f2);
+    background-color: #ffffff;
+    -fx-font-family: "Arial", sans-serif;
+    font-family: "Arial", sans-serif;
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-font-weight: normal;
+    font-weight: normal;
+    -fx-padding: 10px;
+    padding: 10px;
+}
+
+/* Title */
+.title-label {
+    -fx-font-size: 24px;
+    font-size: 24px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 20px;
+    padding: 20px;
+    -fx-line-height: 1.5;
+    line-height: 1.5;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: #3498db;
+    background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-font-weight: normal;
+    font-weight: normal;
+    -fx-padding: 12px 24px;
+    padding: 12px 24px;
+    -fx-cursor: hand;
+    cursor: pointer;
+    -fx-border-radius: 5px;
+    border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease;
+}
+
+/* Button effects */
+.button:hover {
+    -fx-background-color: #2980b9;
+    background-color: #2980b9;
+}
+
+/* Label styles */
+.label {
+    -fx-font-size: 14px;
+    font-size: 14px;
+    -fx-text-fill: #34495e;
+    -fx-line-height: 1.2;
+    line-height: 1.2;
+    -fx-font-weight: normal;
+    font-weight: normal;
+    -fx-font-family: "Arial", sans-serif;
+    font-family: "Arial", sans-serif;
+    -fx-padding: 5px;
+    padding: 5px;
+}
+
+/* TextArea */
+.text-area {
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-background-color: #ffffff;
+    background-color: #ffffff;
+    -fx-border-color: #ccc;
+    border-color: #ccc;
+    -fx-border-radius: 6px;
+    border-radius: 6px;
+    -fx-border-width: 1px;
+    border-width: 1px;
+    -fx-padding: 12px;
+    padding: 12px;
+    -fx-pref-height: 200px;
+    -fx-font-family: "Courier New", monospace;
+    font-family: "Courier New", monospace;
+}
+
+/* Prompt  */
+.text-area .prompt-text {
+    -fx-text-fill: #888;
+    -fx-font-family: "Courier New", monospace;
+    font-family: "Courier New", monospace;
+}
+
+/* Status */
+.label.status {
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-text-fill: #e74c3c;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-line-height: 1.5;
+    line-height: 1.5;
+    -fx-font-family: "Arial", sans-serif;
+    font-family: "Arial", sans-serif;
+    -fx-padding: 10px;
+    padding: 10px;
+}

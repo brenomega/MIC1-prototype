@@ -12,17 +12,13 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This class simulates a simple processor with an interactive GUI for advancing
- * through sub-cycles and clock cycles. It uses JavaFX to create an interface to
- * visualize the CPU's state, including its registers and clock cycle count.
- */
 public class Program2 extends Application {
 
 	private CPU cpu;                                  // Represents the CPU being simulated
@@ -31,7 +27,7 @@ public class Program2 extends Application {
 	private StringProperty registerValues;            // Displays all register values in a formatted string
 
 	public static void main(String[] args) {
-		launch(args); // Launches the JavaFX application
+	launch(args); // Launches the JavaFX application
 	}
 
 	@Override
@@ -39,20 +35,14 @@ public class Program2 extends Application {
 		cpu = new CPU(); // Initialize the CPU object
 		clockCount = new SimpleIntegerProperty(0); // Initialize the clock counter to 0
 
-		// Setup code lines to load into CPU memory, simulating machine instructions
-		short codeLine1 = (short) Integer.parseInt("0111000000000101", 2);
-		short codeLine2 = (short) Integer.parseInt("0001000000000011", 2);
-		short codeLine3 = (short) Integer.parseInt("0010000000000011", 2);
-		cpu.getMemory().passCode(codeLine1, codeLine2, codeLine3); // Pass the code to the CPU memory
-
-		cpu.start();  // Start the CPU simulation
-
 		// Create the JavaFX UI components
 		VBox root = new VBox(10); // Vertical layout with 10px spacing
 		root.setAlignment(Pos.CENTER); // Center the UI components
 
 		Button subcycleButton = new Button("Avançar Subciclo"); // Button to advance the sub-cycle
 		Button cycleButton = new Button("Avançar Ciclo"); // Button to advance the full cycle
+		Button loadCodeButton = new Button("Carregar Código"); // Button to load code from TextArea
+
 		Label clockLabel = new Label(); // Label to display the current clock count
 
 		// Initialize register properties for dynamic updates in the UI
@@ -74,6 +64,12 @@ public class Program2 extends Application {
 		Label registerLabel = new Label();
 		registerLabel.textProperty().bind(registerValues);  // Updates when registers change
 
+		// Create a TextArea for the user to input binary code
+		TextArea codeInputArea = new TextArea();
+		codeInputArea.setPromptText("Digite as linhas de código aqui, cada linha com 16 bits.");
+		codeInputArea.setWrapText(true);
+		codeInputArea.setMaxHeight(100); // Limit the height of the text area
+
 		// Define the button actions to advance cycles and sub-cycles
 		subcycleButton.setOnAction(e -> {
 			cpu.advanceSubcycle(); // Advance by one sub-cycle in the CPU simulation
@@ -87,12 +83,37 @@ public class Program2 extends Application {
 			updateRegisterValues(); // Refresh the register values after the full cycle
 		});
 
+		// Define the action for the "Carregar Código" button
+		loadCodeButton.setOnAction(e -> {
+			String code = codeInputArea.getText();
+			String[] codeLines = code.split("\\n"); // Split input by new lines
+			short[] instructions = new short[codeLines.length];
+			try {
+				// Convert each line of code to a short value and pass it to the CPU's memory
+				for (int i = 0; i < codeLines.length; i++) {
+					String line = codeLines[i].trim();
+					if (line.length() == 16) {
+						instructions[i] = (short) Integer.parseInt(line, 2); // Parse binary to short
+					} else {
+						throw new IllegalArgumentException("Cada linha deve conter 16 bits.");
+					}
+				}
+				cpu.getMemory().passCode(instructions); // Pass the code to the CPU memory
+			} catch (Exception ex) {
+				ex.printStackTrace(); // Handle any errors (e.g., invalid binary input)
+			}
+		});
+
 		// Add the UI components to the root layout
-		root.getChildren().addAll(subcycleButton, cycleButton, registerLabel, clockLabel);
+		root.getChildren().addAll(codeInputArea, loadCodeButton, subcycleButton, cycleButton, registerLabel, clockLabel);
 
 		// Set up the scene and display the window
-		Scene scene = new Scene(root, 600, 400);
-		primaryStage.setTitle("Máquina Simulada"); // Set window title
+		Scene scene = new Scene(root, 800, 650);
+        
+		// Apply the absolute path for the CSS
+		scene.getStylesheets().add("file:///C:/temp/ws-eclipse/MIC1-prototype/resources/style.css");
+
+		primaryStage.setTitle("MIC-1 Simulation"); // Set window title
 		primaryStage.setScene(scene); // Set the scene to display
 		primaryStage.show(); // Show the window
 	}
