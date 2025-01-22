@@ -232,8 +232,7 @@ public class SimulatorController {
 			clockCount.set(cpu.getCount()); // Update the clock count
 			updateRegisterValues(); // Refresh the register values after the sub-cycle
             int subcycle = (cpu.getCount() % 4);
-            System.out.println("cont:" + cpu.getCount());
-            System.out.println("sub:" + subcycle);
+
             if (subcycle == 1){
                     ativaciclo1();
             }
@@ -248,26 +247,32 @@ public class SimulatorController {
             }
             
 
+            ControlUnit controlUnit;
+            controlUnit = cpu.getControlUnit();
             
-            if (cpu.getMARControl()){
+            cpu.printSignals();
+
+            if (controlUnit.getMARControl()){
                 activateComponent("MAR");
             }else{
                 deactivateComponent("MAR");
             }
 
-            if (cpu.getMBRControl()){
+            if (controlUnit.getMBRControl()){
                 activateComponent("MBR");
             }else{
                 deactivateComponent("MBR");
             }
 
-            if (cpu.getSHControl()){
+            Byte shControl = controlUnit.getSHControl();
+
+            if (shControl != 0){
                 activateComponent("SHIFTER");
             }else{
                 deactivateComponent("SHIFTER");
             }
 
-            if (cpu.getENCControl()){
+            if (controlUnit.getENCControl()){
                 activateComponent("C-DEC");
             }else{
                 deactivateComponent("C-DEC");
@@ -279,6 +284,55 @@ public class SimulatorController {
 			cpu.advanceCycle(); // Advance by one full cycle in the CPU simulation
 			clockCount.set(cpu.getCount()); // Update the clock count
 			updateRegisterValues(); // Refresh the register values after the full cycle
+            int subcycle = (cpu.getCount() % 4);
+
+            if (subcycle == 1){
+                ativaciclo1();
+            }
+            if(subcycle == 2){
+                    ativaciclo2();
+            }
+            if (subcycle == 3){
+                    ativaciclo3();
+            }
+            if (subcycle == 0){
+                    ativaciclo4();
+            }
+        
+
+            ControlUnit controlUnit;
+            controlUnit = cpu.getControlUnit();
+
+            cpu.printSignals();
+            
+            if (controlUnit.getMARControl()){
+                activateComponent("MAR");
+            }else{
+                deactivateComponent("MAR");
+            }
+
+            if (controlUnit.getMBRControl()){
+                activateComponent("MBR");
+            }else{
+                deactivateComponent("MBR");
+            }
+
+            Byte shControl = controlUnit.getSHControl();
+
+            if (shControl != 0){
+                activateComponent("SHIFTER");
+            }else{
+                deactivateComponent("SHIFTER");
+            }
+
+            if (controlUnit.getENCControl()){
+                activateComponent("C-DEC");
+            }else{
+                deactivateComponent("C-DEC");
+            }
+
+            
+
 		});
 
 		// Define the action for the "Carregar Código" button
@@ -330,7 +384,7 @@ public class SimulatorController {
     }
 
     public void ativaciclo1(){
-        System.out.println("1");        
+       
         activateComponent("CONTROL");
         activateComponent("MIR");
         deactivateComponent("MPC");
@@ -341,7 +395,7 @@ public class SimulatorController {
     }
 
     public void ativaciclo2(){
-        System.out.println("2");
+
         activateComponent("A-LATCH");
         activateComponent("B-LATCH");
         activateComponent("A-DEC");
@@ -353,7 +407,7 @@ public class SimulatorController {
     }
 
     public void ativaciclo3(){
-        System.out.println("3");   
+
 
         activateComponent("AMUX");
         activateComponent("ALU");
@@ -366,7 +420,7 @@ public class SimulatorController {
     }
 
     public void ativaciclo4(){
-        System.out.println("4");
+
         activateComponent("MPC");
         activateComponent("REG");
         activateComponent("MMUX");
