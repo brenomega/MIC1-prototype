@@ -1,5 +1,23 @@
 package frontend;
 
+import entities.*;
+import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -15,6 +33,11 @@ import java.util.HashMap;
 public class SimulatorController {
 
     private final HashMap<String, Component> components = new HashMap<>();
+    private CPU cpu;                                  // Represents the CPU being simulated
+	private IntegerProperty clockCount;               // Tracks the number of clock cycles
+	private List<StringProperty> registerProperties;  // List to store properties for each register for UI binding
+	private StringProperty registerValues; 
+
 
     public Pane createSimulatorPane() {
         Pane pane = new Pane();
@@ -145,32 +168,145 @@ public class SimulatorController {
         
         createOrthogonalLinesReg(pane, "REG", "B-LATCH");      
 
-            // Caixa de texto
-        TextField inputField = new TextField();
-        inputField.setPromptText("Insira o texto aqui");
-        inputField.setLayoutX(10); // Posição X no painel
-        inputField.setLayoutY(10); // Posição Y no painel
-        inputField.setPrefWidth(300); // Largura da caixa de texto
-        inputField.setPrefHeight(380);
+
+        cpu = new CPU(); // Initialize the CPU object
+		clockCount = new SimpleIntegerProperty(0); // Initialize the clock counter to 0
+
+
+        //     // Caixa de texto
+        // TextField inputField = new TextField();
+        // inputField.setPromptText("Insira o texto aqui");
+        // inputField.setLayoutX(10); // Posição X no painel
+        // inputField.setLayoutY(10); // Posição Y no painel
+        // inputField.setPrefWidth(300); // Largura da caixa de texto
+        // inputField.setPrefHeight(120);
 
         // Botões
-        Button button1 = new Button("Carregar Código");
-        button1.setLayoutX(15); // Mesma posição X da caixa de texto
-        button1.setLayoutY(400); // Logo abaixo da caixa de texto
-        button1.setOnAction(e -> System.out.println("Texto digitado: " + inputField.getText()));
+        Button subcycleButton = new Button("Avançar Subciclo");
+        subcycleButton.setLayoutX(15); // Mesma posição X da caixa de texto
+        subcycleButton.setLayoutY(140); // Logo abaixo da caixa de texto
+        
+        Button cycleButton = new Button("Avançar Ciclo");
+        cycleButton.setLayoutX(15);
+        cycleButton.setLayoutY(180);
+        
+        Button loadCodeButton = new Button("Carregar Código"); 
+        loadCodeButton.setLayoutX(15);
+        loadCodeButton.setLayoutY(220);
+        
+        Label clockLabel = new Label(); // Label to display the current clock count
 
-        Button button2 = new Button("Avançar Subciclo");
-        button2.setLayoutX(15);
-        button2.setLayoutY(440);
-        button2.setOnAction(e -> System.out.println("Botão 2 clicado!"));
+		// Initialize register properties for dynamic updates in the UI
+		registerProperties = new ArrayList<>();
+		for (Register register : cpu.getRegisters()) {
+			StringProperty registerProperty = new SimpleStringProperty();
+			registerProperties.add(registerProperty);
+			updateRegisterProperty(register, registerProperty);  // Set initial values for registers
+		}
 
-        Button button3 = new Button("Avançar ciclo");
-        button3.setLayoutX(15);
-        button3.setLayoutY(480);
-        button3.setOnAction(e -> System.out.println("Botão 3 clicado!"));
+		// Create a property for the formatted string representation of register values
+		registerValues = new SimpleStringProperty();
+		registerValues.set(getFormattedRegisters()); // Initialize register values as a formatted string
+
+		// Bind the clock label to the clock count property for automatic updates
+		clockLabel.textProperty().bind(Bindings.format("Clock: %d", clockCount));
+        clockLabel.setLayoutY(600);
+        clockLabel.setLayoutX(100);
+
+		// Bind the register label to show the formatted string of register values
+		Label registerLabel = new Label();
+		registerLabel.textProperty().bind(registerValues);  // Updates when registers change
+        registerLabel.setLayoutY(300);
+        registerLabel.setLayoutX(50);
+
+		// Create a TextArea for the user to input binary code
+		TextArea codeInputArea = new TextArea();
+		codeInputArea.setPromptText("Digite as linhas de código aqui, cada linha com 16 bits.");
+		codeInputArea.setWrapText(true);
+		codeInputArea.setMaxHeight(120); // Limit the height of the text area
+        codeInputArea.setMaxWidth(350);
+
+		// Define the button actions to advance cycles and sub-cycles
+		subcycleButton.setOnAction(e -> {
+			cpu.advanceSubcycle(); // Advance by one sub-cycle in the CPU simulation
+			clockCount.set(cpu.getCount()); // Update the clock count
+			updateRegisterValues(); // Refresh the register values after the sub-cycle
+            int subcycle = (cpu.getCount() % 4);
+            System.out.println("cont:" + cpu.getCount());
+            System.out.println("sub:" + subcycle);
+            if (subcycle == 1){
+                    ativaciclo1();
+            }
+            if(subcycle == 2){
+                    ativaciclo2();
+            }
+            if (subcycle == 3){
+                    ativaciclo3();
+            }
+            if (subcycle == 0){
+                    ativaciclo4();
+            }
+            
+
+            
+            if (cpu.getMARControl()){
+                activateComponent("MAR");
+            }else{
+                deactivateComponent("MAR");
+            }
+
+            if (cpu.getMBRControl()){
+                activateComponent("MBR");
+            }else{
+                deactivateComponent("MBR");
+            }
+
+            if (cpu.getSHControl()){
+                activateComponent("SHIFTER");
+            }else{
+                deactivateComponent("SHIFTER");
+            }
+
+            if (cpu.getENCControl()){
+                activateComponent("C-DEC");
+            }else{
+                deactivateComponent("C-DEC");
+            }
+
+        });
+
+		cycleButton.setOnAction(e -> {
+			cpu.advanceCycle(); // Advance by one full cycle in the CPU simulation
+			clockCount.set(cpu.getCount()); // Update the clock count
+			updateRegisterValues(); // Refresh the register values after the full cycle
+		});
+
+		// Define the action for the "Carregar Código" button
+		loadCodeButton.setOnAction(e -> {
+			String code = codeInputArea.getText();
+			String[] codeLines = code.split("\\n"); // Split input by new lines
+			short[] instructions = new short[codeLines.length];
+			try {
+				// Convert each line of code to a short value and pass it to the CPU's memory
+				for (int i = 0; i < codeLines.length; i++) {
+					String line = codeLines[i].trim();
+					if (line.length() == 16) {
+						instructions[i] = (short) Integer.parseInt(line, 2); // Parse binary to short
+					} else {
+						throw new IllegalArgumentException("Cada linha deve conter 16 bits.");
+					}
+				}
+				cpu.getMemory().passCode(instructions); // Pass the code to the CPU memory
+			} catch (Exception ex) {
+				ex.printStackTrace(); // Handle any errors (e.g., invalid binary input)
+			}
+		});
 
         // Adicionar os controles ao pane
-        pane.getChildren().addAll(inputField, button1, button2, button3);
+        pane.getChildren().addAll(codeInputArea, subcycleButton, cycleButton, loadCodeButton, clockLabel, registerLabel);
+
+
+        
 
 
         // Continue conectando os componentes conforme necessário
@@ -191,6 +327,54 @@ public class SimulatorController {
         if (component != null) {
             component.deactivate();
         }
+    }
+
+    public void ativaciclo1(){
+        System.out.println("1");        
+        activateComponent("CONTROL");
+        activateComponent("MIR");
+        deactivateComponent("MPC");
+        deactivateComponent("REG");
+        deactivateComponent("MMUX");
+        deactivateComponent("M-SEQ");
+
+    }
+
+    public void ativaciclo2(){
+        System.out.println("2");
+        activateComponent("A-LATCH");
+        activateComponent("B-LATCH");
+        activateComponent("A-DEC");
+        activateComponent("B-DEC");
+        activateComponent("INCR");
+        deactivateComponent("CONTROL");
+        deactivateComponent("MIR");
+
+    }
+
+    public void ativaciclo3(){
+        System.out.println("3");   
+
+        activateComponent("AMUX");
+        activateComponent("ALU");
+        deactivateComponent("A-LATCH");
+        deactivateComponent("B-LATCH");
+        deactivateComponent("A-DEC");
+        deactivateComponent("B-DEC");
+        deactivateComponent("INCR"); 
+        
+    }
+
+    public void ativaciclo4(){
+        System.out.println("4");
+        activateComponent("MPC");
+        activateComponent("REG");
+        activateComponent("MMUX");
+        activateComponent("M-SEQ");
+        deactivateComponent("AMUX");
+        deactivateComponent("ALU");
+       
+
     }
 
     
@@ -1591,5 +1775,43 @@ public class SimulatorController {
         
     }
     
+
+    /**
+	 * Updates the values of all registers and refreshes their string properties.
+	 * This method ensures the UI is synchronized with the state of the CPU registers.
+	 */
+	private void updateRegisterValues() {
+		for (int i = 0; i < cpu.getRegisters().length; i++) {
+			Register register = cpu.getRegisters()[i];
+			StringProperty registerProperty = registerProperties.get(i); // Get the property associated with this register
+			registerProperty.set("Register [name=" + register.getName() + ", value=" + register.getValue() + "]"); // Update the property with the current register value
+		}
+		// Update the display of all registers
+		registerValues.set(getFormattedRegisters());  // Refresh the formatted string of register values
+	}
+
+	/**
+	 * Returns a formatted string containing all the registers and their values.
+	 * This method is used for displaying the state of the CPU's registers.
+	 */
+	private String getFormattedRegisters() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < cpu.getRegisters().length; i++) {
+			sb.append(registerProperties.get(i).get()).append("\n");  // Append each register's value to the string
+		}
+		return sb.toString();  // Return the formatted string
+	}
+
+	/**
+	 * Initializes the property of a register with its current name and value.
+	 * This method is called to set the initial state of the registers when the program starts.
+	 * 
+	 * @param register The register whose property is to be updated.
+	 * @param registerProperty The property that will be updated with the register's value.
+	 */
+	private void updateRegisterProperty(Register register, StringProperty registerProperty) {
+		registerProperty.set("Register [name=" + register.getName() + ", value=" + register.getValue() + "]");
+	}
+
 
 }
