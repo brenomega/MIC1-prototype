@@ -249,6 +249,9 @@ public class SimulatorController {
 
             ControlUnit controlUnit;
             controlUnit = cpu.getControlUnit();
+            String mirCod = controlUnit.getMIR();
+            char mbrControl = mirCod.charAt(7);
+            char cdecControl = mirCod.charAt(11);
             
             cpu.printSignals();
 
@@ -258,8 +261,10 @@ public class SimulatorController {
                 deactivateComponent("MAR");
             }
 
-            if (controlUnit.getMBRControl()){
-                activateComponent("MBR");
+            if (subcycle == 0){
+                if (mbrControl == '1'){
+                    activateComponent("MBR");
+                }
             }else{
                 deactivateComponent("MBR");
             }
@@ -272,8 +277,10 @@ public class SimulatorController {
                 deactivateComponent("SHIFTER");
             }
 
-            if (controlUnit.getENCControl()){
-                activateComponent("C-DEC");
+            if(subcycle == 0){
+                if (cdecControl == '1'){
+                    activateComponent("C-DEC");
+                }
             }else{
                 deactivateComponent("C-DEC");
             }
@@ -302,6 +309,9 @@ public class SimulatorController {
 
             ControlUnit controlUnit;
             controlUnit = cpu.getControlUnit();
+            String mirCod = controlUnit.getMIR();
+            char mbrControl = mirCod.charAt(7);
+            char cdecControl = mirCod.charAt(11);
 
             cpu.printSignals();
             
@@ -311,8 +321,10 @@ public class SimulatorController {
                 deactivateComponent("MAR");
             }
 
-            if (controlUnit.getMBRControl()){
-                activateComponent("MBR");
+            if(subcycle == 0){
+                if (mbrControl == '1'){
+                    activateComponent("MBR");
+                }
             }else{
                 deactivateComponent("MBR");
             }
@@ -325,8 +337,10 @@ public class SimulatorController {
                 deactivateComponent("SHIFTER");
             }
 
-            if (controlUnit.getENCControl()){
-                activateComponent("C-DEC");
+            if (subcycle == 0){
+                if (cdecControl == '1'){
+                    activateComponent("C-DEC");
+                }
             }else{
                 deactivateComponent("C-DEC");
             }
