@@ -6,6 +6,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 
 import java.nio.channels.Pipe.SourceChannel;
 import java.util.HashMap;
@@ -112,12 +114,64 @@ public class SimulatorController {
         createOrthogonalLines13(pane, "A-DEC", "REG");
         createOrthogonalLines14(pane, "B-DEC", "REG");
         createOrthogonalLines15(pane, "C-DEC", "REG");
-        createOrthogonalLines16(pane, "MIR", "A-DEC");
+        createOrthogonalLines16(pane, "MIR", "MMUX");
+        createOrthogonalLines17(pane, "MIR", "A-DEC");
+        createOrthogonalLines18(pane, "MIR", "B-DEC");
+        createOrthogonalLines19(pane, "MIR", "C-DEC");
+        createOrthogonalLines20(pane, "MIR", "C-DEC");
+        createOrthogonalLines21(pane, "MIR");
+        createOrthogonalLines22(pane, "MIR");
+        createOrthogonalLines23(pane, "MIR", "SHIFTER");
+        createOrthogonalLines24(pane, "MIR", "ALU");
+        createOrthogonalLines25(pane, "MIR", "M-SEQ");
+        createOrthogonalLines26(pane, "MIR", "AMUX");
+        createOrthogonalLines27(pane, "CONTROL", "MIR");
+        createOrthogonalLines28(pane, "MIR", "MBR");
+        createOrthogonalLines29(pane, "MIR", "MBR");
+        createOrthogonalLines30(pane, "MIR", "MAR");
+        createOrthogonalLines31(pane, "MIR", "MBR");
+        createOrthogonalLines32(pane, "MAR");
+        createOrthogonalLines32(pane, "MBR");
+        createOrthogonalLines33(pane, "CLOCK", "B-LATCH");
+        createOrthogonalLines33(pane, "CLOCK", "A-LATCH");
+        createOrthogonalLines34(pane, "CLOCK", "MBR");
+        createOrthogonalLines35(pane, "CLOCK", "MAR");
+        createOrthogonalLines36(pane, "CLOCK", "C-DEC");
+        createOrthogonalLines37(pane, "CLOCK", "MIR");
+        createOrthogonalLines38(pane, "CLOCK", "MPC");
         // connectComponentsOrthogonally(pane, "MAR", "MBR");
         // connectComponentsOrthogonally(pane, "MPC", "INCR");
         createOrthogonalLinesReg(pane, "REG", "A-LATCH");
         
         createOrthogonalLinesReg(pane, "REG", "B-LATCH");      
+
+            // Caixa de texto
+        TextField inputField = new TextField();
+        inputField.setPromptText("Insira o texto aqui");
+        inputField.setLayoutX(10); // Posição X no painel
+        inputField.setLayoutY(10); // Posição Y no painel
+        inputField.setPrefWidth(300); // Largura da caixa de texto
+        inputField.setPrefHeight(380);
+
+        // Botões
+        Button button1 = new Button("Carregar Código");
+        button1.setLayoutX(15); // Mesma posição X da caixa de texto
+        button1.setLayoutY(400); // Logo abaixo da caixa de texto
+        button1.setOnAction(e -> System.out.println("Texto digitado: " + inputField.getText()));
+
+        Button button2 = new Button("Avançar Subciclo");
+        button2.setLayoutX(15);
+        button2.setLayoutY(440);
+        button2.setOnAction(e -> System.out.println("Botão 2 clicado!"));
+
+        Button button3 = new Button("Avançar ciclo");
+        button3.setLayoutX(15);
+        button3.setLayoutY(480);
+        button3.setOnAction(e -> System.out.println("Botão 3 clicado!"));
+
+        // Adicionar os controles ao pane
+        pane.getChildren().addAll(inputField, button1, button2, button3);
+
 
         // Continue conectando os componentes conforme necessário
 
@@ -665,7 +719,7 @@ public class SimulatorController {
         double midY2 = midY1;          // Mantém o mesmo Y após descer
 
         double midX3 = midX2;          // Mantém o mesmo X
-        double midY3 = endY - 20;      // Sobe até próximo do ponto final
+        double midY3 = endY ;      // Sobe até próximo do ponto final
 
         double midX4 = endX;           // Vai para a esquerda até o destino
         double midY4 = endY;           // Alcança o destino
@@ -679,8 +733,851 @@ public class SimulatorController {
         // Adiciona as linhas ao grupo ou painel
         Line[] linhafinal = new Line[]{line1, line2, line3, line4};
         connectComponentsOrthogonally(pane, linhafinal);
+        
         }
 
+    }
+
+    public void createOrthogonalLines17(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+        Bounds sourceBounds = source.getImageView().getBoundsInParent();
+        Bounds targetBounds = target.getImageView().getBoundsInParent();
+    
+        // Coordenadas do ponto inicial (source)
+        double startX = sourceBounds.getMinX() - 100 + sourceBounds.getWidth(); // Ligeiramente à direita do centro do componente de origem
+        double startY = sourceBounds.getMinY() + sourceBounds.getHeight();    // Parte inferior do componente de origem
+
+        // Coordenadas do ponto final (target)
+        double endX = targetBounds.getMinX() + targetBounds.getWidth(); // Ligeiramente à direita do centro do componente de destino
+        double endY = targetBounds.getMinY() + targetBounds.getHeight() /2; // Parte inferior do componente de destino
+
+        // Pontos intermediários para criar o trajeto
+        double midX1 = startX;         // Desce verticalmente no mesmo X inicial
+        double midY1 = startY + 30;    // Move 20 pixels para baixo
+
+        double midX2 = midX1 + 110;     // Move 50 pixels para a direita
+        double midY2 = midY1;          // Mantém o mesmo Y após descer
+
+        double midX3 = midX2;          // Mantém o mesmo X
+        double midY3 = endY ;      // Sobe até próximo do ponto final
+
+        double midX4 = endX;           // Vai para a esquerda até o destino
+        double midY4 = endY;           // Alcança o destino
+
+        // Linhas horizontais e verticais
+        Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+        Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a direita
+        Line line3 = new Line(midX2, midY2, midX3, midY3);   // Linha subindo
+        Line line4 = new Line(midX3, midY3, midX4, midY4);   // Linha para a esquerda (destino)
+
+        // Adiciona as linhas ao grupo ou painel
+        Line[] linhafinal = new Line[]{line1, line2, line3, line4};
+        connectComponentsOrthogonally(pane, linhafinal);
+        
+        }
+    }
+
+    public void createOrthogonalLines18(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+        Bounds sourceBounds = source.getImageView().getBoundsInParent();
+        Bounds targetBounds = target.getImageView().getBoundsInParent();
+    
+        // Coordenadas do ponto inicial (source)
+        double startX = sourceBounds.getMinX() - 120 + sourceBounds.getWidth(); // Ligeiramente à direita do centro do componente de origem
+        double startY = sourceBounds.getMinY() + sourceBounds.getHeight();    // Parte inferior do componente de origem
+
+        // Coordenadas do ponto final (target)
+        double endX = targetBounds.getMinX() + targetBounds.getWidth(); // Ligeiramente à direita do centro do componente de destino
+        double endY = targetBounds.getMinY() + targetBounds.getHeight() /2; // Parte inferior do componente de destino
+
+        // Pontos intermediários para criar o trajeto
+        double midX1 = startX + 5;         // Desce verticalmente no mesmo X inicial
+        double midY1 = startY + 40;    // Move 20 pixels para baixo
+
+        double midX2 = midX1 + 130;     // Move 50 pixels para a direita
+        double midY2 = midY1;          // Mantém o mesmo Y após descer
+
+        double midX3 = midX2;          // Mantém o mesmo X
+        double midY3 = endY ;      // Sobe até próximo do ponto final
+
+        double midX4 = endX;           // Vai para a esquerda até o destino
+        double midY4 = endY;           // Alcança o destino
+
+        // Linhas horizontais e verticais
+        Line line1 = new Line(startX, startY, midX1-5, midY1); // Linha descendo
+        Line line2 = new Line(midX1-5, midY1, midX2, midY2);   // Linha para a direita
+        Line line3 = new Line(midX2, midY2, midX3, midY3);   // Linha subindo
+        Line line4 = new Line(midX3, midY3, midX4, midY4);   // Linha para a esquerda (destino)
+
+        // Adiciona as linhas ao grupo ou painel
+        Line[] linhafinal = new Line[]{line1, line2, line3, line4};
+        connectComponentsOrthogonally(pane, linhafinal);
+        
+        }
+    }
+
+    public void createOrthogonalLines19(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+        Bounds sourceBounds = source.getImageView().getBoundsInParent();
+        Bounds targetBounds = target.getImageView().getBoundsInParent();
+    
+        // Coordenadas do ponto inicial (source)
+        double startX = sourceBounds.getMinX() - 140 + sourceBounds.getWidth(); // Ligeiramente à direita do centro do componente de origem
+        double startY = sourceBounds.getMinY() + sourceBounds.getHeight();    // Parte inferior do componente de origem
+
+        // Coordenadas do ponto final (target)
+        double endX = targetBounds.getMinX() + targetBounds.getWidth(); // Ligeiramente à direita do centro do componente de destino
+        double endY = targetBounds.getMinY() + targetBounds.getHeight() /2; // Parte inferior do componente de destino
+
+        // Pontos intermediários para criar o trajeto
+        double midX1 = startX + 6;         // Desce verticalmente no mesmo X inicial
+        double midY1 = startY + 50;    // Move 20 pixels para baixo
+
+        double midX2 = midX1 + 155;     // Move 50 pixels para a direita
+        double midY2 = midY1;          // Mantém o mesmo Y após descer
+
+        double midX3 = midX2;          // Mantém o mesmo X
+        double midY3 = endY ;      // Sobe até próximo do ponto final
+
+        double midX4 = endX;           // Vai para a esquerda até o destino
+        double midY4 = endY;           // Alcança o destino
+
+        // Linhas horizontais e verticais
+        Line line1 = new Line(startX, startY, midX1-6, midY1); // Linha descendo
+        Line line2 = new Line(midX1-6, midY1, midX2, midY2);   // Linha para a direita
+        Line line3 = new Line(midX2, midY2, midX3, midY3);   // Linha subindo
+        Line line4 = new Line(midX3, midY3, midX4, midY4);   // Linha para a esquerda (destino)
+
+        // Adiciona as linhas ao grupo ou painel
+        Line[] linhafinal = new Line[]{line1, line2, line3, line4};
+        connectComponentsOrthogonally(pane, linhafinal);
+        
+        }
+    }
+
+    public void createOrthogonalLines20(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+        Bounds sourceBounds = source.getImageView().getBoundsInParent();
+        Bounds targetBounds = target.getImageView().getBoundsInParent();
+    
+        // Coordenadas do ponto inicial (source)
+        double startX = sourceBounds.getMinX() - 155 + sourceBounds.getWidth(); // Ligeiramente à direita do centro do componente de origem
+        double startY = sourceBounds.getMinY() + sourceBounds.getHeight();    // Parte inferior do componente de origem
+
+        // Coordenadas do ponto final (target)
+        double endX = targetBounds.getMinX() + targetBounds.getWidth(); // Ligeiramente à direita do centro do componente de destino
+        double endY = targetBounds.getMinY() - 5 + targetBounds.getHeight() /2; // Parte inferior do componente de destino
+
+        // Pontos intermediários para criar o trajeto
+        double midX1 = startX + 6;         // Desce verticalmente no mesmo X inicial
+        double midY1 = startY + 65;    // Move 20 pixels para baixo
+
+        double midX2 = midX1 + 175;     // Move 50 pixels para a direita
+        double midY2 = midY1;          // Mantém o mesmo Y após descer
+
+        double midX3 = midX2;          // Mantém o mesmo X
+        double midY3 = endY ;      // Sobe até próximo do ponto final
+
+        double midX4 = endX;           // Vai para a esquerda até o destino
+        double midY4 = endY;           // Alcança o destino
+
+        // Linhas horizontais e verticais
+        Line line1 = new Line(startX, startY, midX1-6, midY1); // Linha descendo
+        Line line2 = new Line(midX1-6, midY1, midX2, midY2);   // Linha para a direita
+        Line line3 = new Line(midX2, midY2, midX3, midY3);   // Linha subindo
+        Line line4 = new Line(midX3, midY3, midX4, midY4);   // Linha para a esquerda (destino)
+
+        // Adiciona as linhas ao grupo ou painel
+        Line[] linhafinal = new Line[]{line1, line2, line3, line4};
+        connectComponentsOrthogonally(pane, linhafinal);
+        
+        }
+    }
+
+    public void createOrthogonalLines21(Pane pane, String sourceName) {
+        Component source = components.get(sourceName);
+        
+        
+        if (source != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX() - 35 + sourceBounds.getWidth() / 2; // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight();   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = 400;                              // Parte esquerda do componente de destino
+            double endY = 800; // Centro vertical do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX;           // Mantém o mesmo X inicial
+            double midY1 = startY + 220;      // Desce 50 pixels abaixo do ponto inicial
+        
+            double midX2 = endX - 50;        // Move 50 pixels para a esquerda, próximo do destino
+            double midY2 = midY1;            // Mantém o mesmo Y após descer
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a esquerda
+            
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+        
+        
+    }
+
+    public void createOrthogonalLines22(Pane pane, String sourceName) {
+        Component source = components.get(sourceName);
+        
+        
+        if (source != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX() - 30 + sourceBounds.getWidth() / 2; // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight();   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = 400;                              // Parte esquerda do componente de destino
+            double endY = 800; // Centro vertical do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX;           // Mantém o mesmo X inicial
+            double midY1 = startY + 230;      // Desce 50 pixels abaixo do ponto inicial
+        
+            double midX2 = endX - 50;        // Move 50 pixels para a esquerda, próximo do destino
+            double midY2 = midY1;            // Mantém o mesmo Y após descer
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a esquerda
+            
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+        
+        
+    }
+
+    public void createOrthogonalLines23(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX() - 75 + sourceBounds.getWidth() / 2; // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight();   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() + targetBounds.getWidth() ;                               // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY() + targetBounds.getHeight() / 2; // Centro vertical do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX;           // Mantém o mesmo X inicial
+            double midY1 = endY;      // Desce 50 pixels abaixo do ponto inicial
+        
+            double midX2 = endX;        // Move 50 pixels para a esquerda, próximo do destino
+            double midY2 = endY;            // Mantém o mesmo Y após descer
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a esquerda
+            
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+    }
+
+    public void createOrthogonalLines24(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX() - 90 + sourceBounds.getWidth() / 2; // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight();   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() - 20 + targetBounds.getWidth() ;                               // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY() + 15 + targetBounds.getHeight() / 2; // Centro vertical do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX;           // Mantém o mesmo X inicial
+            double midY1 = endY;      // Desce 50 pixels abaixo do ponto inicial
+        
+            double midX2 = endX;        // Move 50 pixels para a esquerda, próximo do destino
+            double midY2 = endY;            // Mantém o mesmo Y após descer
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a esquerda
+            
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+    }
+    
+    public void createOrthogonalLines25(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX() - 110 + sourceBounds.getWidth() / 2; // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight();   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() + targetBounds.getWidth() ;                               // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY() + targetBounds.getHeight() / 2; // Centro vertical do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX;           // Mantém o mesmo X inicial
+            double midY1 = endY;      // Desce 50 pixels abaixo do ponto inicial
+        
+            double midX2 = endX;        // Move 50 pixels para a esquerda, próximo do destino
+            double midY2 = endY;            // Mantém o mesmo Y após descer
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a esquerda
+            
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+    }
+
+    public void createOrthogonalLines26(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX(); // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight() / 2;   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() + targetBounds.getWidth() ;                               // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY() + targetBounds.getHeight() / 2; // Centro vertical do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX;           // Mantém o mesmo X inicial
+            double midY1 = endY;      // Desce 50 pixels abaixo do ponto inicial
+        
+            double midX2 = endX;        // Move 50 pixels para a esquerda, próximo do destino
+            double midY2 = endY;            // Mantém o mesmo Y após descer
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a esquerda
+            
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+    }
+
+    public void createOrthogonalLines27(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX() + sourceBounds.getWidth() / 2; // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight();   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() + targetBounds.getWidth() / 2;                               // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY(); // Centro vertical do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX;           // Mantém o mesmo X inicial
+            double midY1 = endY;      // Desce 50 pixels abaixo do ponto inicial
+        
+            double midX2 = endX;        // Move 50 pixels para a esquerda, próximo do destino
+            double midY2 = endY;            // Mantém o mesmo Y após descer
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a esquerda
+            
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+    }
+
+    public void createOrthogonalLines28(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX() - 35 + sourceBounds.getWidth() / 2; // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight();   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() + targetBounds.getWidth() / 2;                               // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY() + targetBounds.getHeight(); // Centro vertical do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX;           // Mantém o mesmo X inicial
+            double midY1 = startY + 220;      // Desce 50 pixels abaixo do ponto inicial
+        
+            double midX2 = endX;        // Move 50 pixels para a esquerda
+            double midY2 = midY1;            // Mantém o mesmo Y após descer
+        
+            double midX3 = midX2;            // Mantém o mesmo X do ponto anterior
+            double midY3 = endY;             // Sobe até o alinhamento do ponto final
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a esquerda
+            Line line3 = new Line(midX2, midY1, midX3, midY3);   // Linha subindo
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2, line3};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+    }
+
+    public void createOrthogonalLines29(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX() - 45 + sourceBounds.getWidth() / 2; // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight();   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() - 10 + targetBounds.getWidth() / 2;                               // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY() + targetBounds.getHeight(); // Centro vertical do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX;           // Mantém o mesmo X inicial
+            double midY1 = startY + 230;      // Desce 50 pixels abaixo do ponto inicial
+        
+            double midX2 = endX;        // Move 50 pixels para a esquerda
+            double midY2 = midY1;            // Mantém o mesmo Y após descer
+        
+            double midX3 = midX2;            // Mantém o mesmo X do ponto anterior
+            double midY3 = endY;             // Sobe até o alinhamento do ponto final
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a esquerda
+            Line line3 = new Line(midX2, midY1, midX3, midY3);   // Linha subindo
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2, line3};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+    }
+
+    public void createOrthogonalLines30(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX() - 55 + sourceBounds.getWidth() / 2; // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight();   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() -15 + targetBounds.getWidth() / 2;                               // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY() + targetBounds.getHeight(); // Centro vertical do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX;           // Mantém o mesmo X inicial
+            double midY1 = startY + 210;      // Desce 50 pixels abaixo do ponto inicial
+        
+            double midX2 = endX;        // Move 50 pixels para a esquerda
+            double midY2 = midY1;            // Mantém o mesmo Y após descer
+        
+            double midX3 = midX2;            // Mantém o mesmo X do ponto anterior
+            double midY3 = endY;             // Sobe até o alinhamento do ponto final
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a esquerda
+            Line line3 = new Line(midX2, midY1, midX3, midY3);   // Linha subindo
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2, line3};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+    }
+
+    public void createOrthogonalLines31(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX() - 65 + sourceBounds.getWidth() / 2; // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight();   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() + 10 + targetBounds.getWidth() / 2;                               // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY() + targetBounds.getHeight(); // Centro vertical do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX;           // Mantém o mesmo X inicial
+            double midY1 = startY + 190;      // Desce 50 pixels abaixo do ponto inicial
+        
+            double midX2 = endX;        // Move 50 pixels para a esquerda
+            double midY2 = midY1;            // Mantém o mesmo Y após descer
+        
+            double midX3 = midX2;            // Mantém o mesmo X do ponto anterior
+            double midY3 = endY;             // Sobe até o alinhamento do ponto final
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha descendo
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para a esquerda
+            Line line3 = new Line(midX2, midY1, midX3, midY3);   // Linha subindo
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2, line3};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+    }
+
+    public void createOrthogonalLines32(Pane pane, String sourceName) {
+        Component source = components.get(sourceName);
+        
+        
+        if (source != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX(); // Centro do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight() / 2;   // Parte inferior do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = startX - 40;                              // Parte esquerda do componente de destino
+            double endY = startY; // Centro vertical do componente de destino
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, endX, endY); // Linha descendo
+            
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+        
+        
+    }
+
+    public void createOrthogonalLines33(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX(); // Parte direita do componente de origem
+            double startY = sourceBounds.getMinY() + 10 + sourceBounds.getHeight() / 2; // Centro vertical do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() + 10 + targetBounds.getWidth() / 2;   // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY();   // Parte inferior do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = endX;    // Alinha horizontalmente com o destino
+            double midY1 = startY;  // Mantém o mesmo Y inicial
+        
+            // Linhas pontilhadas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha para a esquerda
+            Line line2 = new Line(midX1, midY1, endX, endY);     // Linha descendo
+        
+            // Configura as linhas como pontilhadas
+            line1.getStrokeDashArray().addAll(10.0, 5.0); // Traço de 10px, espaço de 5px
+            line2.getStrokeDashArray().addAll(10.0, 5.0); // Mesmo padrão para a linha descendente
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+        
+    }
+
+    public void createOrthogonalLines34(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX(); // Parte direita do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight() / 2; // Centro vertical do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() + 15 + targetBounds.getWidth() / 2;   // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY();   // Parte inferior do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = endX;    // Alinha horizontalmente com o destino
+            double midY1 = startY;  // Mantém o mesmo Y inicial
+        
+            // Linhas pontilhadas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha para a esquerda
+            Line line2 = new Line(midX1, midY1, endX, endY);     // Linha descendo
+        
+            // Configura as linhas como pontilhadas
+            line1.getStrokeDashArray().addAll(10.0, 5.0); // Traço de 10px, espaço de 5px
+            line2.getStrokeDashArray().addAll(10.0, 5.0); // Mesmo padrão para a linha descendente
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+        
+    }
+
+    public void createOrthogonalLines35(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX(); // Parte direita do componente de origem
+            double startY = sourceBounds.getMinY() - 10 + sourceBounds.getHeight() / 2; // Centro vertical do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() + 15 + targetBounds.getWidth() / 2;   // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY();   // Parte inferior do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = endX;    // Alinha horizontalmente com o destino
+            double midY1 = startY;  // Mantém o mesmo Y inicial
+        
+            // Linhas pontilhadas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha para a esquerda
+            Line line2 = new Line(midX1, midY1, endX, endY);     // Linha descendo
+        
+            // Configura as linhas como pontilhadas
+            line1.getStrokeDashArray().addAll(10.0, 5.0); // Traço de 10px, espaço de 5px
+            line2.getStrokeDashArray().addAll(10.0, 5.0); // Mesmo padrão para a linha descendente
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+        
+    }
+
+    public void createOrthogonalLines36(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX(); // Parte direita do componente de origem
+            double startY = sourceBounds.getMinY() - 10 + sourceBounds.getHeight() / 2; // Centro vertical do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() + targetBounds.getWidth();                              // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY() - 10 + targetBounds.getHeight();   // Parte inferior do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX - 50;   // Move 50px para a esquerda
+            double midY1 = startY;        // Mantém o mesmo Y inicial
+        
+            double midX2 = midX1;         // Mantém o mesmo X
+            double midY2 = endY;   // Sobe 50px a partir do Y inicial
+        
+            double midX3 = endX;          // Move para a esquerda até o destino
+            double midY3 = midY2;         // Mantém o mesmo Y após subir
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha para a esquerda
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para cima
+            Line line3 = new Line(midX2, midY2, midX3, midY3);   // Linha para a esquerda novamente
+        
+            // Configura as linhas como pontilhadas
+            line1.getStrokeDashArray().addAll(10.0, 5.0); // Traço de 10px, espaço de 5px
+            line2.getStrokeDashArray().addAll(10.0, 5.0); // Mesmo padrão para a linha ascendente
+            line3.getStrokeDashArray().addAll(10.0, 5.0); // Mesmo padrão para a linha final à esquerda
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2, line3};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+        
+    }
+
+    public void createOrthogonalLines37(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX(); // Parte direita do componente de origem
+            double startY = sourceBounds.getMinY() + 15 + sourceBounds.getHeight() / 2; // Centro vertical do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX();                              // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY() + targetBounds.getHeight() / 2;   // Parte inferior do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX - 100;   // Move 50px para a esquerda
+            double midY1 = startY;        // Mantém o mesmo Y inicial
+        
+            double midX2 = midX1;         // Mantém o mesmo X
+            double midY2 = endY;   // Sobe 50px a partir do Y inicial
+        
+            double midX3 = endX;          // Move para a esquerda até o destino
+            double midY3 = midY2;         // Mantém o mesmo Y após subir
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha para a esquerda
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para cima
+            Line line3 = new Line(midX2, midY2, midX3, midY3);   // Linha para a esquerda novamente
+        
+            // Configura as linhas como pontilhadas
+            line1.getStrokeDashArray().addAll(10.0, 5.0); // Traço de 10px, espaço de 5px
+            line2.getStrokeDashArray().addAll(10.0, 5.0); // Mesmo padrão para a linha ascendente
+            line3.getStrokeDashArray().addAll(10.0, 5.0); // Mesmo padrão para a linha final à esquerda
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2, line3};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+        
+    }
+
+    public void createOrthogonalLines38(Pane pane, String sourceName, String targetName) {
+        Component source = components.get(sourceName);
+        Component target = components.get(targetName);
+        
+        if (source != null && target != null) {
+
+            Bounds sourceBounds = source.getImageView().getBoundsInParent();
+            Bounds targetBounds = target.getImageView().getBoundsInParent();
+        
+            // Coordenadas do ponto inicial (source)
+            double startX = sourceBounds.getMinX() + sourceBounds.getWidth(); // Parte direita do componente de origem
+            double startY = sourceBounds.getMinY() + sourceBounds.getHeight() / 2; // Centro vertical do componente de origem
+        
+            // Coordenadas do ponto final (target)
+            double endX = targetBounds.getMinX() + targetBounds.getWidth();                              // Parte esquerda do componente de destino
+            double endY = targetBounds.getMinY() + targetBounds.getHeight() / 2;   // Parte inferior do componente de destino
+        
+            // Pontos intermediários para criar o trajeto
+            double midX1 = startX + 10;   // Move 50px para a esquerda
+            double midY1 = startY;        // Mantém o mesmo Y inicial
+        
+            double midX2 = midX1;         // Mantém o mesmo X
+            double midY2 = endY;   // Sobe 50px a partir do Y inicial
+        
+            double midX3 = endX;          // Move para a esquerda até o destino
+            double midY3 = midY2;         // Mantém o mesmo Y após subir
+        
+            // Linhas horizontais e verticais
+            Line line1 = new Line(startX, startY, midX1, midY1); // Linha para a esquerda
+            Line line2 = new Line(midX1, midY1, midX2, midY2);   // Linha para cima
+            Line line3 = new Line(midX2, midY2, midX3, midY3);   // Linha para a esquerda novamente
+        
+            // Configura as linhas como pontilhadas
+            line1.getStrokeDashArray().addAll(10.0, 5.0); // Traço de 10px, espaço de 5px
+            line2.getStrokeDashArray().addAll(10.0, 5.0); // Mesmo padrão para a linha ascendente
+            line3.getStrokeDashArray().addAll(10.0, 5.0); // Mesmo padrão para a linha final à esquerda
+        
+            // Adiciona as linhas ao grupo ou painel
+            Line[] linhafinal = new Line[]{line1, line2, line3};
+            connectComponentsOrthogonally(pane, linhafinal);
+        }
+        
     }
 
 
