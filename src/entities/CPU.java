@@ -234,4 +234,8 @@ public class CPU implements Runnable {
 		System.out.println(controlUnit.getMPC());
 		System.out.println(controlUnit.getMIR());
 	}
+	
+	public ControlUnit getControlUnit() {
+		return controlUnit;
+	}
 }
